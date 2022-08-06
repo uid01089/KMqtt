@@ -2,6 +2,7 @@
 #define KMQTT_H
 
 #include <list>
+#include <functional>
 #include <PubSubClient.h>
 
 #include "Arduino.h"
@@ -11,7 +12,7 @@ class KMqtt
 {
 private:
     static std::list<CallbackEntry *> callbackList;
-    static void mqttCallback(char *topic, byte *payload, unsigned int length);
+    static void mqttCallback(char *topic, uint8_t *payload, unsigned int length);
     PubSubClient pubsubclient;
     static String payloadToString(byte *payload, unsigned int length);
 
@@ -20,7 +21,7 @@ public:
     ~KMqtt();
     void setup(String domain, const uint16_t port, String id);
     void loop();
-    void regCallBack(String topic, CallBackPtr fct);
+    void regCallBack(String topic, std::function<void(String)> fct);
     void publish(String topic, String payload);
 };
 

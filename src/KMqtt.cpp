@@ -26,14 +26,14 @@ void KMqtt::loop()
     pubsubclient.loop();
 }
 
-void KMqtt::regCallBack(String topic, CallBackPtr fct)
+void KMqtt::regCallBack(String topic, std::function<void(String)> fct)
 {
     CallbackEntry *scheduleEntry = new CallbackEntry(topic, fct);
     KMqtt::callbackList.push_back(scheduleEntry);
     pubsubclient.subscribe(topic.c_str());
 }
 
-void KMqtt::mqttCallback(char *topic, byte *payload, unsigned int length)
+void KMqtt::mqttCallback(char *topic, uint8_t *payload, unsigned int length)
 {
 
     String topicAsString = String(topic);
