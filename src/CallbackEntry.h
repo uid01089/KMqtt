@@ -1,22 +1,21 @@
 #ifndef CALLBACK_ENTRY_h
 #define CALLBACK_ENTRY_h
 
-#include "Arduino.h"
-
-typedef void (*CallBackPtr)(String payload);
+#include <functional>
+#include <Arduino.h>
 
 class CallbackEntry
 {
 
 public:
-    CallbackEntry(String topic, CallBackPtr fct);
+    CallbackEntry(String topic, std::function<void(String)> fct);
     ~CallbackEntry();
     String getTopic();
-    CallBackPtr getFct();
+    std::function<void(String)> getFct();
 
 private:
     String topic;
-    CallBackPtr fct;
+    std::function<void(String)> fct;
 };
 
 #endif

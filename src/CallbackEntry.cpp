@@ -1,6 +1,6 @@
 #include "CallbackEntry.h"
 
-CallbackEntry::CallbackEntry(String topic, CallBackPtr fct)
+CallbackEntry::CallbackEntry(String topic, std::function<void(String)> fct)
 {
     this->fct = fct;
     this->topic = topic;
@@ -13,7 +13,7 @@ String CallbackEntry::getTopic()
 {
     return topic;
 }
-CallBackPtr CallbackEntry::getFct()
+std::function<void(String)> CallbackEntry::getFct()
 {
     return fct;
 }
