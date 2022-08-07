@@ -1,10 +1,8 @@
 #include "KMqtt.h"
 
-std::list<CallbackEntry *> KMqtt::callbackList;
-
 KMqtt::KMqtt(const PubSubClient &pubsubclient)
 {
-    this->pubsubclient = pubsubclient;
+    this->pubsubclient = &pubsubclient;
 }
 
 KMqtt::~KMqtt()
@@ -12,25 +10,25 @@ KMqtt::~KMqtt()
 }
 void KMqtt::setup(String domain, const uint16_t port, String id)
 {
-    pubsubclient.setServer(domain.c_str(), port);
-    while (!pubsubclient.connected())
+    pubsubclient->setServer(domain.c_str(), port);
+    while (!pubsubclient->connected())
     {
-        pubsubclient.connect(id.c_str());
+        pubsubclient->connect(id.c_str());
         delay(100);
     }
 
-    pubsubclient.setCallback(KMqtt::mqttCallback);
+    pubsubclient->setCallback(std::bind(&KMqtt::mqttCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 void KMqtt::loop()
 {
-    pubsubclient.loop();
+    pubsubclient->loop();
 }
 
 void KMqtt::regCallBack(String topic, std::function<void(String)> fct)
 {
     CallbackEntry *scheduleEntry = new CallbackEntry(topic, fct);
-    KMqtt::callbackList.push_back(scheduleEntry);
-    pubsubclient.subscribe(topic.c_str());
+    callbackList.push_back(scheduleEntry);
+    pubsubclient->subscribe(topic.c_str());
 }
 
 void KMqtt::mqttCallback(char *topic, uint8_t *payload, unsigned int length)
@@ -39,7 +37,7 @@ void KMqtt::mqttCallback(char *topic, uint8_t *payload, unsigned int length)
     String topicAsString = String(topic);
     String payloadAsString = KMqtt::payloadToString(payload, length);
 
-    for (CallbackEntry *entry : KMqtt::callbackList)
+    for (CallbackEntry *entry : callbackList)
     {
         if (topicAsString == entry->getTopic())
         {
@@ -51,7 +49,7 @@ void KMqtt::mqttCallback(char *topic, uint8_t *payload, unsigned int length)
 
 void KMqtt::publish(String topic, String payload)
 {
-    pubsubclient.publish(topic.c_str(), payload.c_str());
+    pubsubclient->publish(topic.c_str(), payload.c_str());
 }
 
 String KMqtt::payloadToString(byte *payload, unsigned int length)

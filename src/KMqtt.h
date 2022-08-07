@@ -11,9 +11,9 @@
 class KMqtt
 {
 private:
-    static std::list<CallbackEntry *> callbackList;
-    static void mqttCallback(char *topic, uint8_t *payload, unsigned int length);
-    PubSubClient pubsubclient;
+    std::list<CallbackEntry *> callbackList;
+    void mqttCallback(char *topic, uint8_t *payload, unsigned int length);
+    PubSubClient *pubsubclient;
     static String payloadToString(byte *payload, unsigned int length);
 
 public:
