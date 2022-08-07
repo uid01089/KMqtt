@@ -17,7 +17,7 @@ private:
     static String payloadToString(byte *payload, unsigned int length);
 
 public:
-    KMqtt(const PubSubClient &pubsubclient);
+    KMqtt(PubSubClient &pubsubclient);
     ~KMqtt();
     void setup(String domain, const uint16_t port, String id);
     void loop();
