@@ -1,6 +1,6 @@
 #include "KMqtt.h"
 
-KMqtt::KMqtt(const PubSubClient &pubsubclient)
+KMqtt::KMqtt(PubSubClient &pubsubclient)
 {
     this->pubsubclient = &pubsubclient;
 }
